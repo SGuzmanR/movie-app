@@ -13,8 +13,9 @@ const database = new Databases(client);
 export const updateSearchCount = async (searchTerm, movie) => {
   // 1. Use Appwrite SDK to check if the search term exist in the DB
   try {
+    const encodedSearchTerm = encodeURIComponent(searchTerm);
     const result = await database.listDocuments(DATABASE_ID, COLLECTION_ID, [
-      Query.equal('searchTerm', searchTerm),
+      Query.equal('searchTerm', encodedSearchTerm),
     ])
 
     // 2. If it does , update the count
@@ -34,7 +35,7 @@ export const updateSearchCount = async (searchTerm, movie) => {
       })
     }
   } catch (error) {
-    console.log(error);
+    console.error('Error fetching documents:', error);
   };
 };
 

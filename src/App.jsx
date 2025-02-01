@@ -136,7 +136,7 @@ const App =() => {
             <img src="./logo.png" alt="logo movie app" className="w-20 h-auto mb-12" />
           </a>
 
-          <img src="./hero.png" alt="hero banner" className="w-auto h-auto" />
+          <img src="./hero.png" alt="hero banner" className="w-full h-auto" />
           <h1>Find <span className="text-gradient">Movies</span> You&apos;ll Enjoy Without the Hassle</h1>
 
           <Search searchTerm={searchTerm} setSearchTerm={setSearchTerm} />

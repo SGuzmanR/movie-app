@@ -35,6 +35,10 @@
     @apply mx-auto max-w-4xl text-center text-5xl font-bold leading-tight tracking-[-1%] text-white sm:text-[64px] sm:leading-[76px];
   }
 
+  & h1 .span {
+    @apply text-gradient;
+  }
+
   h2 {
     @apply text-2xl font-bold text-white sm:text-3xl;
   }

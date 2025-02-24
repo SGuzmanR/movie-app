@@ -6,6 +6,8 @@ import Search from "./components/Search";
 import Spinner from "./components/Spinner";
 import MovieCard from "./components/MovieCard";
 import MovieModal from "./components/MovieModal";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/all";
 
 const API_BASE_URL = 'https://api.themoviedb.org/3';
 const API_KEY = import.meta.env.VITE_TMDB_API_KEY;
@@ -126,27 +128,68 @@ const App =() => {
     };
   }, [showModal]);
 
+  useEffect(() => {
+    gsap.to(".pattern", {
+      opacity: 1,
+      duration: 1.5,
+      delay: 0.4
+    });
+
+    gsap.to(".hero-img", {
+      opacity: 1,
+      stagger: 0.3,
+      translateY: 0,
+      ease: "sine.in",
+      delay: 0.6
+    });
+
+    gsap.fromTo(".hero-title", {
+      opacity: 0,
+      translateY: 40,
+      clipPath: "inset(0% 0% 100% 0%)"
+    }, {
+      opacity: 1,
+      translateY: 0,
+      duration: 1.2,
+      delay: 1,
+      ease: "sine.in",
+      clipPath: "inset(0% 0% 0% 0%)"
+    });
+
+    gsap.fromTo(".search", {
+      opacity: 0,
+      translateY: "-100%"
+    }, {
+      opacity: 1,
+      duration: 1.5,
+      delay: 2,
+      translateY: 0,
+      ease: "sine.inOut"
+    })
+  }, []);
+
   return (
     <main className="overflow-x-hidden">
-      <div className="pattern" />
+      <div className="pattern opacity-0" />
 
       <div className="wrapper">
         <header>
           <a href="/">
-            <img src="./logo.png" alt="logo movie app" className="w-20 h-auto mb-12" />
+            <img src="./logo.png" alt="logo movie app" className="hero-img opacity-0 translate-y-[100%] w-20 h-auto mb-12" />
           </a>
 
-          <img src="./hero.png" alt="hero banner" className="w-full h-auto" />
-          <h1>Find <span className="text-gradient">Movies</span> You&apos;ll Enjoy Without the Hassle</h1>
+          <img src="./hero.png" alt="hero banner" className="hero-img opacity-0 translate-y-[20%] w-full h-auto" />
+
+          <h1 className="hero-title">Find <span className="text-gradient">Movies</span> You&apos;ll Enjoy Without the Hassle</h1>
 
           <Search searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
         </header>
 
         {trendingMovies.length > 0 && (
           <section className="trending">
-            <h2>Trending Movies</h2>
+            <h2 className="trending-text">Trending Movies</h2>
 
-            <ul>
+            <ul className="trending-text">
               {trendingMovies.map((movie, i) => (
                 <li key={movie.$id}>
                   <p>{i + 1}</p>
@@ -157,43 +200,45 @@ const App =() => {
           </section>
         )}
 
-        <section className="all-movies">
-          <h2 className={trendingMovies.length === 0 ? 'mt-[40px]' : ''}>{searchTerm === '' ? 'Popular' : `Search for '${searchTerm}'`}</h2>
+        <div className="all-movies-wrapper">
+          <section className="all-movies">
+            <h2 className={trendingMovies.length === 0 ? 'mt-[40px]' : ''}>{searchTerm === '' ? 'Popular' : `Search for '${searchTerm}'`}</h2>
 
-          {loading ? (
-            <Spinner />
-          ) : errorMessage ? (
-            <p className="text-red-500">{errorMessage}</p>
-          ) : (
-            <ul>
-              {movieList.map((movie) => (
-                <MovieCard key={movie.id} movie={movie} onMovieClick={fetchMovieDetails} />
-              ))}
-            </ul>
-          )}
-        </section>
-        
-        {totalPages !== 1 && (
-          <section className="pagination">
-            <button
-              disabled={currentPage === 1}
-              onClick={() => setCurrentPage(currentPage - 1)}
-            >
-              <img src="./left-arrow.png" alt="previous arrow" className="w-auto h-auto" />
-            </button>
-
-            <h4>
-              <span className="text-white font-bold">{currentPage}</span> / {totalPages}
-            </h4>
-
-            <button
-              disabled={currentPage === totalPages}
-              onClick={() => setCurrentPage(currentPage + 1)}
-            >
-              <img src="./right-arrow.png" alt="next arrow" className="w-auto h-auto" />
-            </button>
+            {loading ? (
+              <Spinner />
+            ) : errorMessage ? (
+              <p className="text-red-500">{errorMessage}</p>
+            ) : (
+              <ul>
+                {movieList.map((movie) => (
+                  <MovieCard key={movie.id} movie={movie} onMovieClick={fetchMovieDetails} />
+                ))}
+              </ul>
+            )}
           </section>
-        )}
+          
+          {totalPages !== 1 && (
+            <section className="pagination">
+              <button
+                disabled={currentPage === 1}
+                onClick={() => setCurrentPage(currentPage - 1)}
+              >
+                <img src="./left-arrow.png" alt="previous arrow" className="w-auto h-auto" />
+              </button>
+
+              <h4>
+                <span className="text-white font-bold">{currentPage}</span> / {totalPages}
+              </h4>
+
+              <button
+                disabled={currentPage === totalPages}
+                onClick={() => setCurrentPage(currentPage + 1)}
+              >
+                <img src="./right-arrow.png" alt="next arrow" className="w-auto h-auto" />
+              </button>
+            </section>
+          )}
+        </div>
       </div>
 
       <footer className="wrapper">
